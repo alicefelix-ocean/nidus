@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nidus</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Epilogue:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#f7f4ef;font-family:'Lora',serif;color:#1a1814;min-height:100vh;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:#e8e4dc;}
+.header{background:#fff;border-bottom:1px solid #e8e4dc;padding:14px 20px;position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-size:20px;font-weight:600;letter-spacing:-0.4px;}
+.subline{font-family:'Epilogue',sans-serif;font-size:9px;color:#8a8479;letter-spacing:0.06em;margin-top:3px;}
+.live-wrap{display:flex;align-items:center;gap:7px;}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#1a6b5a;}
+.live-label{font-family:'Epilogue',sans-serif;font-size:10px;color:#1a6b5a;letter-spacing:0.1em;}
+.sig-count{font-family:'Epilogue',sans-serif;font-size:10px;color:#8a8479;}
+.container{max-width:520px;margin:0 auto;padding-bottom:80px;}
+.headline-card{background:#f0ebe0;border:1px solid #ddd8cc;border-radius:12px;padding:18px 20px;margin:18px 20px 0;}
+.headline-label{font-family:'Epilogue',sans-serif;font-size:9px;color:#1a6b5a;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:8px;}
+.headline-text{font-family:'Lora',serif;font-size:15px;color:#1a1814;line-height:1.6;}
+.summary-card{background:#fff;border:1px solid #e8e4dc;border-radius:12px;padding:16px 20px;margin:12px 20px 0;}
+.pct-row{display:flex;justify-content:space-between;margin-bottom:12px;}
+.pct-item{text-align:center;flex:1;}
+.pct-num{font-size:24px;font-weight:500;font-family:'Lora',serif;line-height:1;}
+.pct-label{font-family:'Epilogue',sans-serif;font-size:9px;color:#8a8479;letter-spacing:0.12em;text-transform:uppercase;margin-top:4px;}
+.bar-track{display:flex;height:3px;border-radius:3px;overflow:hidden;gap:2px;}
+.bar-seg{transition:flex 0.8s ease;}
+.tabs{display:flex;padding:16px 20px 0;border-bottom:1px solid #e8e4dc;margin-top:12px;}
+.tab-btn{font-family:'Epilogue',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;border:none;background:none;padding:10px 0;margin-right:24px;cursor:pointer;border-bottom:2px solid transparent;color:#8a8479;transition:all 0.2s;}
+.tab-btn.on{border-bottom-color:#1a6b5a;color:#1a6b5a;}
+.filters{display:flex;gap:6px;padding:12px 20px 0;overflow-x:auto;scrollbar-width:none;}
+.filter-label{font-family:'Epilogue',sans-serif;font-size:9px;color:#8a8479;letter-spacing:0.12em;text-transform:uppercase;padding:12px 20px 4px;display:block;}
+.fb{font-family:'Epilogue',sans-serif;border:1px solid #e8e4dc;background:transparent;border-radius:20px;padding:4px 12px;font-size:10px;letter-spacing:0.07em;cursor:pointer;color:#8a8479;white-space:nowrap;transition:all 0.18s;}
+.fb.on{background:#1a6b5a;border-color:#1a6b5a;color:#fff;}
+.feed{display:flex;flex-direction:column;gap:10px;padding:12px 20px 0;}
+.post-card{background:#fff;border-radius:10px;padding:16px 18px;border:1px solid #e8e4dc;border-left-width:3px;}
+.post-card:hover{box-shadow:0 2px 16px rgba(0,0,0,0.06);}
+.card-top{display:flex;justify-content:space-between;margin-bottom:9px;align-items:flex-start;gap:8px;}
+.pill{font-family:'Epilogue',sans-serif;font-size:10px;padding:2px 9px;border-radius:20px;letter-spacing:0.06em;display:inline-block;white-space:nowrap;}
+.card-text{font-family:'Epilogue',sans-serif;font-size:13px;line-height:1.72;color:#1a1814;margin-bottom:10px;}
+.card-bottom{display:flex;justify-content:space-between;align-items:center;}
+.card-meta{font-family:'Epilogue',sans-serif;font-size:10px;color:#8a8479;display:flex;gap:10px;align-items:center;}
+.source-link{font-family:'Epilogue',sans-serif;font-size:10px;color:#1a6b5a;text-decoration:none;}
+.source-link:hover{text-decoration:underline;}
+.empty{text-align:center;padding:40px 0;color:#8a8479;font-family:'Epilogue',sans-serif;font-size:12px;}
+.refresh-btn{font-family:'Epilogue',sans-serif;background:#1a6b5a;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:opacity 0.2s;}
+.refresh-btn:hover{opacity:0.82;}
+.week-toggle{display:flex;gap:6px;padding:12px 20px 0;}
+.week-btn{font-family:'Epilogue',sans-serif;border:1px solid #e8e4dc;background:transparent;border-radius:20px;padding:4px 14px;font-size:10px;letter-spacing:0.07em;cursor:pointer;color:#8a8479;transition:all 0.18s;}
+.week-btn.on{background:#1a1814;border-color:#1a1814;color:#fff;}
+.intent-dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="logo">Nidus</div>
+    <div class="subline" id="dateline"></div>
+  </div>
+  <div class="live-wrap">
+    <div class="live-dot"></div>
+    <span class="live-label">LIVE</span>
+    <span class="sig-count" id="sigCount">—</span>
+    <button class="refresh-btn" onclick="loadData()">Refresh</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="headline-card">
+    <div class="headline-label">Signal Brief</div>
+    <div class="headline-text" id="headlineText">Loading…</div>
+  </div>
+
+  <div class="summary-card">
+    <div class="pct-row">
+      <div class="pct-item"><div class="pct-num" id="posP" style="color:#1a6b5a">—</div><div class="pct-label">Positive</div></div>
+      <div class="pct-item"><div class="pct-num" id="negP" style="color:#b84141">—</div><div class="pct-label">Negative</div></div>
+      <div class="pct-item"><div class="pct-num" id="neuP" style="color:#8a8479">—</div><div class="pct-label">Neutral</div></div>
+    </div>
+    <div class="bar-track">
+      <div class="bar-seg" id="barPos" style="background:#1a6b5a;flex:1"></div>
+      <div class="bar-seg" id="barNeg" style="background:#b84141;flex:1"></div>
+      <div class="bar-seg" id="barNeu" style="background:#8a8479;flex:1"></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn on" onclick="switchTab('topics',this)">Topics</button>
+    <button class="tab-btn" onclick="switchTab('feed',this)">Live Feed</button>
+  </div>
+
+  <div id="tab-topics">
+    <div class="week-toggle">
+      <button class="week-btn on" onclick="setWeek('this',this)">This week</button>
+      <button class="week-btn" onclick="setWeek('last',this)">Last week</button>
+    </div>
+    <div style="padding:12px 20px 0" id="topicsList"></div>
+    <div style="padding:16px 20px 0" id="intentList"></div>
+  </div>
+
+  <div id="tab-feed" style="display:none">
+    <span class="filter-label">Source</span>
+    <div class="filters" id="sourceFilters"></div>
+    <span class="filter-label">Intent</span>
+    <div class="filters" id="intentFilters"></div>
+    <span class="filter-label">Topic</span>
+    <div class="filters" id="topicFilters"></div>
+    <div class="feed" id="feedList"><div class="empty">Loading…</div></div>
+  </div>
+
+</div>
+
+<script>
+const SC = { positive:"#1a6b5a", negative:"#b84141", neutral:"#8a8479" };
+const SBG = { positive:"rgba(26,107,90,0.07)", negative:"rgba(184,65,65,0.07)", neutral:"rgba(138,132,121,0.07)" };
+const IC = { "Switching Risk":"#b84141", "Struggling":"#c07a1a", "Praising":"#1a6b5a", "Reacting to News":"#1a5a9b" };
+const srcColor = { Reddit:"#c05c1a", "Twitter/X":"#4a90b8", YouTube:"#b84141", Telegram:"#1a5a9b" };
+
+let allPosts = [];
+let activeSource = "All";
+let activeTopic = null;
+let activeIntent = null;
+let activeWeek = "this";
+
+const d = new Date();
+document.getElementById("dateline").textContent =
+  d.toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"}) + " · NEET PG · INI-CET";
+
+function getWeekLabel(offset=0) {
+  const now = new Date();
+  now.setDate(now.getDate() - offset*7);
+  const year = now.getFullYear();
+  const start = new Date(year,0,1);
+  const week = Math.floor(((now-start)/86400000+start.getDay()+1)/7);
+  return `${year}-W${String(week).padStart(2,"0")}`;
+}
+
+async function loadData() {
+  try {
+    const r = await fetch("http://localhost:8765");
+    allPosts = await r.json();
+    document.getElementById("sigCount").textContent = allPosts.length + " signals";
+    renderAll();
+  } catch(e) {
+    document.getElementById("headlineText").textContent = "Cannot reach Nidus server. Check Terminal Tab 1.";
+  }
+}
+
+function weekFiltered() {
+  const thisWeek = getWeekLabel(0);
+  const lastWeek = getWeekLabel(1);
+  const target = activeWeek === "this" ? thisWeek : lastWeek;
+  return allPosts.filter(p => p.week === target || (!p.week && activeWeek==="this"));
+}
+
+function filtered() {
+  return allPosts.filter(p =>
+    (activeSource==="All" || p.source===activeSource) &&
+    (!activeTopic || p.topic===activeTopic) &&
+    (!activeIntent || p.intent===activeIntent)
+  );
+}
+
+function renderAll() {
+  renderHeadline();
+  renderSummary();
+  renderTopics();
+  renderFeed();
+}
+
+function renderHeadline() {
+  const f = filtered();
+  const tot = f.length || 1;
+  const neg = f.filter(p=>p.sentiment==="negative").length;
+  const pos = f.filter(p=>p.sentiment==="positive").length;
+  const switching = f.filter(p=>p.intent==="Switching Risk").length;
+  const struggling = f.filter(p=>p.intent==="Struggling").length;
+  const negPct = Math.round(neg/tot*100);
+  const posPct = Math.round(pos/tot*100);
+
+  let headline = "";
+  if (switching > 2) headline = `${switching} doctors signalling platform switch risk. `;
+  if (negPct > 60) headline += `Sentiment is predominantly negative at ${negPct}%. `;
+  else if (posPct > 60) headline += `Sentiment is predominantly positive at ${posPct}%. `;
+  else headline += `Sentiment is mixed — ${negPct}% negative, ${posPct}% positive. `;
+  if (struggling > 3) headline += `Burnout and struggle signals are elevated.`;
+
+  const topTopic = getTopTopic(f);
+  if (topTopic) headline += ` Top cluster: ${topTopic}.`;
+
+  document.getElementById("headlineText").textContent = headline || "Collecting signals…";
+}
+
+function getTopTopic(posts) {
+  const c = {};
+  posts.forEach(p => { c[p.topic]=(c[p.topic]||0)+1; });
+  return Object.entries(c).sort((a,b)=>b[1]-a[1])[0]?.[0];
+}
+
+function renderSummary() {
+  const f = filtered();
+  const tot = f.length || 1;
+  const pos = f.filter(p=>p.sentiment==="positive").length;
+  const neg = f.filter(p=>p.sentiment==="negative").length;
+  const neu = f.filter(p=>p.sentiment==="neutral").length;
+  document.getElementById("posP").textContent = Math.round(pos/tot*100)+"%";
+  document.getElementById("negP").textContent = Math.round(neg/tot*100)+"%";
+  document.getElementById("neuP").textContent = Math.round(neu/tot*100)+"%";
+  document.getElementById("barPos").style.flex = pos;
+  document.getElementById("barNeg").style.flex = neg;
+  document.getElementById("barNeu").style.flex = neu;
+}
+
+function renderTopics() {
+  const wf = weekFiltered();
+  const counts = {}, sentiments = {}, intents = {};
+  wf.forEach(p => {
+    const t = p.topic||"Other";
+    counts[t]=(counts[t]||0)+1;
+    if(!sentiments[t]) sentiments[t]={positive:0,negative:0,neutral:0};
+    sentiments[t][p.sentiment]=(sentiments[t][p.sentiment]||0)+1;
+  });
+
+  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  const max = sorted[0]?.[1]||1;
+
+  document.getElementById("topicsList").innerHTML = `
+    <div style="background:#fff;border:1px solid #e8e4dc;border-radius:12px;overflow:hidden">
+      <div style="padding:14px 18px 4px;font-family:'Epilogue',sans-serif;font-size:9px;color:#8a8479;letter-spacing:0.16em;text-transform:uppercase">
+        ${activeWeek==="this"?"This week":"Last week"} · Topic clusters
+      </div>
+      ${sorted.map(([topic,count],i)=>{
+        const s = sentiments[topic];
+        const dom = s.negative>s.positive&&s.negative>s.neutral?"negative":s.positive>s.neutral?"positive":"neutral";
+        const sc = SC[dom];
+        return `<div style="padding:12px 18px;display:flex;align-items:center;gap:14px;${i<sorted.length-1?'border-bottom:1px solid #e8e4dc':''}">
+          <div style="font-family:'Lora',serif;font-size:11px;color:#e8e4dc;font-weight:600;min-width:20px;text-align:right">${String(i+1).padStart(2,"0")}</div>
+          <div style="flex:1">
+            <div style="font-family:'Epilogue',sans-serif;font-size:12px;color:#1a1814;margin-bottom:5px">${topic}</div>
+            <div style="height:2px;background:#e8e4dc;border-radius:2px">
+              <div style="height:2px;background:${sc};border-radius:2px;width:${Math.round(count/max*100)}%"></div>
+            </div>
+          </div>
+          <div style="text-align:right;min-width:44px">
+            <div style="font-family:'Epilogue',sans-serif;font-size:12px;color:#1a1814">${count}</div>
+            <div style="font-family:'Epilogue',sans-serif;font-size:9px;color:${sc};text-transform:uppercase;letter-spacing:0.06em">${dom}</div>
+          </div>
+        </div>`;
+      }).join("")}
+    </div>`;
+
+  // Intent breakdown
+  const intentCounts = {};
+  wf.forEach(p => { if(p.intent) intentCounts[p.intent]=(intentCounts[p.intent]||0)+1; });
+  const iSorted = Object.entries(intentCounts).sort((a,b)=>b[1]-a[1]);
+  const iMax = iSorted[0]?.[1]||1;
+
+  document.getElementById("intentList").innerHTML = `
+    <div style="background:#fff;border:1px solid #e8e4dc;border-radius:12px;overflow:hidden;margin-bottom:12px">
+      <div style="padding:14px 18px 4px;font-family:'Epilogue',sans-serif;font-size:9px;color:#8a8479;letter-spacing:0.16em;text-transform:uppercase">
+        Intent breakdown
+      </div>
+      ${iSorted.map(([intent,count],i)=>{
+        const ic = IC[intent]||"#8a8479";
+        return `<div style="padding:12px 18px;display:flex;align-items:center;gap:14px;${i<iSorted.length-1?'border-bottom:1px solid #e8e4dc':''}">
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;margin-bottom:5px">
+              <span style="width:8px;height:8px;border-radius:50%;background:${ic};display:inline-block;margin-right:8px;flex-shrink:0"></span>
+              <span style="font-family:'Epilogue',sans-serif;font-size:12px;color:#1a1814">${intent}</span>
+            </div>
+            <div style="height:2px;background:#e8e4dc;border-radius:2px">
+              <div style="height:2px;background:${ic};border-radius:2px;width:${Math.round(count/iMax*100)}%"></div>
+            </div>
+          </div>
+          <div style="font-family:'Epilogue',sans-serif;font-size:12px;color:#1a1814;min-width:24px;text-align:right">${count}</div>
+        </div>`;
+      }).join("")}
+    </div>`;
+}
+
+function renderFeed() {
+  const sources = ["All",...new Set(allPosts.map(p=>p.source).filter(Boolean))];
+  const intents = [...new Set(allPosts.map(p=>p.intent).filter(Boolean))];
+  const topics = [...new Set(allPosts.map(p=>p.topic).filter(Boolean))];
+
+  document.getElementById("sourceFilters").innerHTML = sources.map(s=>
+    `<button class="fb ${activeSource===s?'on':''}" onclick="setSource('${s}')">${s}</button>`).join("");
+  document.getElementById("intentFilters").innerHTML = intents.map(t=>
+    `<button class="fb ${activeIntent===t?'on':''}" onclick="setIntent('${t}')" style="${activeIntent===t?'':''}">
+      <span style="width:6px;height:6px;border-radius:50%;background:${IC[t]||'#8a8479'};display:inline-block;margin-right:4px;vertical-align:middle"></span>${t}
+    </button>`).join("");
+  document.getElementById("topicFilters").innerHTML = topics.map(t=>
+    `<button class="fb ${activeTopic===t?'on':''}" onclick="setTopic('${t}')">${t}</button>`).join("");
+
+  const posts = filtered();
+  if (!posts.length) {
+    document.getElementById("feedList").innerHTML = '<div class="empty">No signals match this filter.</div>';
+    return;
+  }
+
+  document.getElementById("feedList").innerHTML = posts.map(p=>{
+    const sc = SC[p.sentiment]||"#8a8479";
+    const bg = SBG[p.sentiment]||"rgba(0,0,0,0.04)";
+    const ic = IC[p.intent]||"#8a8479";
+    const time = p.fetched_at ? new Date(p.fetched_at).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}) : "";
+    const redditUrl = `https://www.reddit.com/r/${p.subreddit}/search/?q=${encodeURIComponent(p.title.slice(0,60))}&restrict_sr=1`;
+    return `<div class="post-card" style="border-left-color:${sc}">
+      <div class="card-top">
+        <div style="display:flex;gap:5px;flex-wrap:wrap;flex:1">
+          <span class="pill" style="color:${srcColor[p.source]||'#8a8479'};background:${srcColor[p.source]||'#8a8479'}18">${p.source||'Reddit'}</span>
+          <span class="pill" style="color:${ic};background:${ic}14">
+            <span style="width:5px;height:5px;border-radius:50%;background:${ic};display:inline-block;margin-right:3px;vertical-align:middle"></span>${p.intent||'—'}
+          </span>
+          <span class="pill" style="color:#8a8479;background:#e8e4dc">${p.topic||'Other'}</span>
+        </div>
+        <span class="pill" style="color:${sc};background:${bg};flex-shrink:0">${p.sentiment} · ${p.score}%</span>
+      </div>
+      <p class="card-text">${p.title}</p>
+      <div class="card-bottom">
+        <a class="source-link" href="${redditUrl}" target="_blank">↗ r/${p.subreddit}</a>
+        <div class="card-meta"><span>↑ ${p.ups}</span><span>${time}</span></div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function setSource(s){activeSource=s;renderAll();}
+function setTopic(t){activeTopic=activeTopic===t?null:t;renderAll();}
+function setIntent(t){activeIntent=activeIntent===t?null:t;renderAll();}
+function setWeek(w,btn){
+  activeWeek=w;
+  document.querySelectorAll(".week-btn").forEach(b=>b.classList.remove("on"));
+  btn.classList.add("on");
+  renderTopics();
+}
+function switchTab(tab,btn){
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("on"));
+  btn.classList.add("on");
+  document.getElementById("tab-topics").style.display=tab==="topics"?"block":"none";
+  document.getElementById("tab-feed").style.display=tab==="feed"?"block":"none";
+}
+
+loadData();
+setInterval(loadData,60000);
+</script>
+</body>
+</html>
