@@ -141,7 +141,7 @@ function getWeekLabel(offset=0) {
 
 async function loadData() {
   try {
-    const r = await fetch("http://localhost:8765");
+    const r = await fetch("https://nidus-qc43.onrender.com");
     allPosts = await r.json();
     document.getElementById("sigCount").textContent = allPosts.length + " signals";
     renderAll();
