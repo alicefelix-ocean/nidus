@@ -352,6 +352,8 @@ function renderFeed() {
       </div>
     </div>`;
   }).join("");
+  });
+  document.getElementById("feedList").innerHTML = html;
 }
 
 function setSource(s){activeSource=s;renderAll();}
