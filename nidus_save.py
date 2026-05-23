@@ -1,9 +1,35 @@
 import requests
 import os
 import json
+import re
 from google import genai
 from supabase import create_client
 from datetime import datetime, timezone
+
+def sanitize(text):
+    text = text[:500]
+    text = re.sub(r'(?i)(ignore|forget|disregard).{0,30}(above|previous|instruction)', '', text)
+    text = re.sub(r'(?i)you are now', '', text)
+    text = re.sub(r'(?i)system prompt', '', text)
+    text = re.sub(r'[<>{}[\]]', '', text)
+    return text.strip()
+
+def validate(result):
+    valid_sentiments = {"positive", "negative", "neutral"}
+    valid_intents = {"Switching Risk", "Struggling", "Praising", "Reacting to News"}
+    valid_topics = {
+        "Marrow", "PrepLadder", "Marrow/PrepLadder", "Grand Tests",
+        "Stress & burnout", "Revision strategy", "Subject tips",
+        "Rank anxiety", "Study hours", "Exam news",
+        "Career & Life After PG", "College & Seat Selection",
+        "System & Policy Frustration", "Other"
+    }
+    return (
+        result.get("sentiment") in valid_sentiments and
+        result.get("intent") in valid_intents and
+        result.get("topic") in valid_topics and
+        isinstance(result.get("score"), (int, float))
+    )
 
 client_gemini = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 supabase = create_client(os.environ["SUPABASE_URL"], os.environ["SUPABASE_KEY"])
@@ -18,7 +44,7 @@ for sub in subreddits:
         r = requests.get(url, headers=headers)
         for item in r.json()["data"]["children"]:
             p = item["data"]
-            posts.append({"title": p["title"], "ups": p["ups"], "subreddit": sub})
+            posts.append({"title": sanitize(p["title"]), "ups": p["ups"], "subreddit": sub})
     except Exception as e:
         print(f"Skipping {sub}: {e}")
 
@@ -33,12 +59,19 @@ for post in posts:
 Post: "{post['title']}"
 
 Respond in JSON only, no explanation:
-{{"sentiment": "positive or negative or neutral", "topic": "one of: Marrow/PrepLadder/Grand Tests/Stress & burnout/Revision strategy/Subject tips/Rank anxiety/Study hours/Exam news/Career & Life After PG/College & Seat Selection/System & Policy Frustration/Other", "intent": "one of: Switching Risk/Struggling/Praising/Reacting to News", "score": 0-100}}"""
+{{"sentiment": "positive or negative or neutral", "topic": "one of: Marrow/PrepLadder/Grand Tests/Stress & burnout/Revision strategy/Subject tips/Rank anxiety/Study hours/Exam news/Career & Life After PG/College & Seat Selection/System & Policy Frustration/Other", "intent": "one of: Switching Risk/Struggling/Praising/Reacting to News", "score": 0-100}}
+
+Career & Life After PG: post-exam career choices, specialty regret, doctor salaries, unemployment
+College & Seat Selection: rank-to-college decisions, DNB vs MD, college reviews
+System & Policy Frustration: internship conditions, govt postings, doctor pay, hospital conditions"""
 
     try:
         response = client_gemini.models.generate_content(model="gemini-2.5-flash", contents=prompt)
         text = response.text.strip().replace("```json", "").replace("```", "").strip()
         result = json.loads(text)
+        if not validate(result):
+            print(f"Invalid output skipped: {result}")
+            continue
         row = {
             "title": post["title"],
             "sentiment": result["sentiment"],
