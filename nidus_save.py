@@ -33,7 +33,7 @@ for post in posts:
 Post: "{post['title']}"
 
 Respond in JSON only, no explanation:
-{{"sentiment": "positive or negative or neutral", "topic": "one of: Marrow/PrepLadder/Grand Tests/Stress & burnout/Revision strategy/Subject tips/Rank anxiety/Study hours/Exam news/Other", "intent": "one of: Switching Risk/Struggling/Praising/Reacting to News", "score": 0-100}}"""
+{{"sentiment": "positive or negative or neutral", "topic": "one of: Marrow/PrepLadder/Grand Tests/Stress & burnout/Revision strategy/Subject tips/Rank anxiety/Study hours/Exam news/Career & Life After PG/College & Seat Selection/System & Policy Frustration/Other", "intent": "one of: Switching Risk/Struggling/Praising/Reacting to News", "score": 0-100}}"""
 
     try:
         response = client_gemini.models.generate_content(model="gemini-2.5-flash", contents=prompt)
