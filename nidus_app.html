@@ -146,7 +146,7 @@ async function loadData() {
     const today = new Date().toDateString();
     const todayCount = allPosts.filter(p => new Date(p.fetched_at).toDateString() === today).length;
     const totalCount = allPosts.length;
-    document.getElementById("sigCount").textContent = todayCount + " today · " + totalCount + " total";
+    document.getElementById("sigCount").textContent = todayCount + " today · " + allPosts.length + " total";
     renderAll();
   } catch(e) {
     document.getElementById("headlineText").textContent = "Cannot reach Nidus server. Check Terminal Tab 1.";
