@@ -305,7 +305,30 @@ function renderFeed() {
     return;
   }
 
-  document.getElementById("feedList").innerHTML = posts.map(p=>{
+  const grouped = {};
+  posts.forEach(p => {
+    const d = p.fetched_at ? new Date(p.fetched_at).toDateString() : "Unknown";
+    if (!grouped[d]) grouped[d] = [];
+    grouped[d].push(p);
+  });
+
+  const todayD = new Date().toDateString();
+  const yesterdayD = new Date(Date.now()-86400000).toDateString();
+  function dateLabel(d) {
+    if (d === todayD) return "Today";
+    if (d === yesterdayD) return "Yesterday";
+    return new Date(d).toLocaleDateString("en-IN", {weekday:"long", day:"numeric", month:"short"});
+  }
+
+  let html = "";
+  Object.entries(grouped).forEach(([date, datePosts]) => {
+    const sep = "<div style='display:flex;align-items:center;gap:10px;margin:16px 0 8px'>" +
+      "<span style='font-family:Epilogue,sans-serif;font-size:10px;color:#8a8479;letter-spacing:0.12em;text-transform:uppercase'>" + dateLabel(date) + "</span>" +
+      "<span style='font-family:Epilogue,sans-serif;font-size:10px;color:#1a6b5a;margin-left:4px'>" + datePosts.length + " signal" + (datePosts.length!==1?"s":"") + "</span>" +
+      "<div style='flex:1;height:1px;background:#e8e4dc;margin-left:8px'></div>" +
+      "</div>";
+    html += sep;
+    html += datePosts.map(p=>{
     const sc = SC[p.sentiment]||"#8a8479";
     const bg = SBG[p.sentiment]||"rgba(0,0,0,0.04)";
     const ic = IC[p.intent]||"#8a8479";
